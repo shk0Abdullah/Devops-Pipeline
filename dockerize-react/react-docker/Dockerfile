@@ -25,7 +25,7 @@ RUN chown -R app:app .
 
 USER app
 
-RUN npm install
+RUN npm i
 COPY . .
 
 EXPOSE 5173
