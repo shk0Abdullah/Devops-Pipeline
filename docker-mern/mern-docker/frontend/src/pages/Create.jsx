@@ -5,42 +5,45 @@ import { useNavigate } from "react-router-dom";
 function Create() {
   const navigate = useNavigate();
 
- const [form, setForm] = useState({
-  title: "",
-  link: "",
-  description: "",
+  const [form, setForm] = useState({
+    title: "",
+    link: "",
+    description: "",
   });
 
   const handleChange = (e) => {
-    setForm((prev) => {
-      return {
-        ...prev,
-        [e.target.id]: e.target.value,
-      };
-    });
-  }
+    const { id, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Debug: check what's being sent
+    console.log("Sending:", form);
 
-    axios
-      .post(`${import.meta.env.VITE_API_URL}/api/anime`, form)
-      .then((res) => console.log(res.data))
-      .catch((err) => console.log(err));
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/anime`,
+        form
+      );
+      console.log("Response:", res.data);
 
-    setForm({
-      title: "",
-      link: "",
-      description: "",
-    });
-
-    navigate("/");
+      setForm({ title: "", link: "", description: "" });
+      navigate("/");
+    } catch (err) {
+      console.error("Error:", err.response?.data || err.message);
+      alert(err.response?.data?.error || "Failed to create anime");
+    }
   };
 
   return (
     <main className="container">
       <div className="form_area">
-      <h1 className="title">Share Anime</h1>
+        <h1 className="title">Share Anime</h1>
         <form onSubmit={handleSubmit} className="form">
           <div className="form_group">
             <label htmlFor="title" className="sub_title">
@@ -52,7 +55,7 @@ function Create() {
               id="title"
               placeholder="Enter anime name"
               value={form.title}
-              onChange={handleChange}
+              onChange={handleChange}  // ✅ Fixed
             />
           </div>
           <div className="form_group">
@@ -65,7 +68,7 @@ function Create() {
               id="link"
               placeholder="Enter anime link"
               value={form.link}
-              onChange={handleChange}
+              onChange={handleChange}  // ✅ Fixed
             />
           </div>
           <div className="form_group">
@@ -78,7 +81,7 @@ function Create() {
               id="description"
               placeholder="Enter your description"
               value={form.description}
-              onChange={handleChange}
+              onChange={handleChange}  // ✅ Fixed
             />
           </div>
           <div>

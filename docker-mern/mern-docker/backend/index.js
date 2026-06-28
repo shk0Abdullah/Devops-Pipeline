@@ -32,6 +32,7 @@ app.get("/api/anime", async (req, res) => {
 
 app.post("/api/anime", async (req, res) => {
   const anime = new Anim(req.body);
+  console.log(`From backend : ${anime}`)
   await anime.save();
   res.json(anime);
 });
