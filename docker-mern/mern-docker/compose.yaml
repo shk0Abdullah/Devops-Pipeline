@@ -1,0 +1,38 @@
+services:
+  web:
+    build: ./frontend
+    ports:
+      - 5173:5173
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    develop:
+      watch:
+        - path: ./frontend/package*.json
+          action: rebuild
+        - path: ./frontend
+          action: sync
+          target: /app        # Where files go inside container
+
+  api:
+    build: ./backend
+    ports:
+      - 8000:8000
+    environment:
+      - DB_URL=mongodb://db/anime
+    develop:
+      watch:
+        - path: ./backend/package*.json
+          action: rebuild
+        - path: ./backend
+          action: sync
+          target: /app        # Where files go inside container
+
+  db:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - anime:/data/db
+
+volumes:
+  anime:
